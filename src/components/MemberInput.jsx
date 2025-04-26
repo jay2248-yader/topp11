@@ -194,7 +194,7 @@ function MemberInput() {
   return (
     <div className="page-container">
       <div className="topic-header-area">
-        <Link to="/topp7" className="back-button">
+        <Link to="/topp8" className="back-button">
           &larr; ກັບໜ້າຫຼັກ
         </Link>
         <h1 className="topic-title">{topicInfo?.name || 'ບໍ່ເຫັນຫົວຂໍ້'}</h1>

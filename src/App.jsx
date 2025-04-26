@@ -10,8 +10,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/topp7/admin" element={<Admin />} />
-        <Route path="/topp7" element={<TopicL />} /> {/* หน้า TopicList */}
+        <Route path="/topp8/admin" element={<Admin />} />
+        <Route path="/topp8" element={<TopicL />} /> {/* หน้า TopicList */}
         <Route path="/topics/:topicId" element={<MemberInput />} /> {/* หน้า MemberInput ที่รับ topicId */}
         <Route path="/add-topic" element={<AddTopic />} />
       </Routes>

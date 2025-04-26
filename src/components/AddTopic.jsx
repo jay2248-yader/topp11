@@ -33,7 +33,7 @@ function AddTopic() {
       });
 
       alert("Topic added successfully");
-      navigate("/topp7/admin");
+      navigate("/topp8/admin");
     } catch (err) {
       setError("Error adding topic: " + err.message);
     }
