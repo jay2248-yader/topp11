@@ -1,50 +1,112 @@
-import React, { useState } from "react";
-import { db } from "../firebase";  // ใช้ Firebase Firestore
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { db } from "../firebase";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { useAuth } from "../AuthContext";
-import { useNavigate } from "react-router-dom";
+import "./AddTopic.css";
 
-function AddTopic() {
+function ManageTopics() {
   const { currentUser } = useAuth();
-  const navigate = useNavigate();
-  
-  const [name, setName] = useState("หัวข้อ 1");
+
+  const [topics, setTopics] = useState([]);
+  const [name, setName] = useState("ຫົວຂໍ້ 1");
   const [description, setDescription] = useState("");
   const [membersPerGroup, setMembersPerGroup] = useState(4);
   const [maxGroups, setMaxGroups] = useState(5);
   const [status, setStatus] = useState("active");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const fetchTopics = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "topics"));
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTopics(data);
+    } catch (err) {
+      setError("ไม่สามารถโหลดหัวข้อได้: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTopics();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (!currentUser) {
-        setError("Please log in first.");
+        setError("กรุณาเข้าสู่ระบบก่อน");
         return;
       }
 
-      await addDoc(collection(db, "topics"), {
-        name: name,
-        description: description,
+      const docRef = await addDoc(collection(db, "topics"), {
+        name,
+        description,
         membersPerGroup: Number(membersPerGroup),
         maxGroups: Number(maxGroups),
-        status: status,
+        status,
         createdAt: serverTimestamp(),
       });
 
-      alert("Topic added successfully");
-      navigate("/topp8/admin");
+      setTopics([
+        ...topics,
+        {
+          id: docRef.id,
+          name,
+          description,
+          membersPerGroup,
+          maxGroups,
+          status,
+        },
+      ]);
+
+      setName("หัวข้อ 1");
+      setDescription("");
+      setMembersPerGroup(4);
+      setMaxGroups(5);
+      setStatus("active");
     } catch (err) {
-      setError("Error adding topic: " + err.message);
+      setError("เกิดข้อผิดพลาดในการเพิ่มหัวข้อ: " + err.message);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const confirm = window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบหัวข้อนี้?");
+    if (!confirm) return;
+
+    try {
+      await deleteDoc(doc(db, "topics", id));
+      setTopics(topics.filter((topic) => topic.id !== id));
+    } catch (err) {
+      alert("เกิดข้อผิดพลาดในการลบ: " + err.message);
     }
   };
 
   return (
-    <div className="admin-form">
-      <h2>เพิ่มหัวข้อใหม่</h2>
-      {error && <p className="error-message">{error}</p>}
-      <form onSubmit={handleSubmit}>
+    <div className="manage-topics-container">
+      <Link to="/topp8/admin" className="manage-topics-back-btn">
+        &larr; ກັບໜ້າຫຼັກ
+      </Link>
+
+      <h2 className="manage-topics-main-title">ເພີ່ມຫົວຂໍ້ໃໝ່</h2>
+      
+      {error && <p className="manage-topics-error-msg">{error}</p>}
+      
+      <form className="manage-topics-form" onSubmit={handleSubmit}>
         <input
+          className="manage-topics-form-input"
           type="text"
           placeholder="ชื่อหัวข้อ"
           value={name}
@@ -52,9 +114,8 @@ function AddTopic() {
           required
         />
 
-
-
         <input
+          className="manage-topics-form-input"
           type="number"
           placeholder="สมาชิกต่อกลุ่ม"
           value={membersPerGroup}
@@ -64,6 +125,7 @@ function AddTopic() {
         />
 
         <input
+          className="manage-topics-form-input"
           type="number"
           placeholder="จำนวนกลุ่มสูงสุด"
           value={maxGroups}
@@ -72,15 +134,69 @@ function AddTopic() {
           required
         />
 
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+        <select 
+          className="manage-topics-form-select"
+          value={status} 
+          onChange={(e) => setStatus(e.target.value)}
+        >
           <option value="active">active</option>
           <option value="inactive">inactive</option>
         </select>
 
-        <button type="submit">บันทึกหัวข้อ</button>
+        <button 
+          className="manage-topics-submit-btn" 
+          type="submit"
+        >
+          ບັນທືກຫົວຂໍ້
+        </button>
       </form>
+
+      <hr className="manage-topics-divider" />
+
+      <h2 className="manage-topics-sub-title">ລາຍການຫົວຂໍ້ທັງໝົດ</h2>
+      
+      {loading ? (
+        <p className="manage-topics-loading">กำลังโหลด...</p>
+      ) : topics.length === 0 ? (
+        <p className="manage-topics-empty">ไม่มีหัวข้อ</p>
+      ) : (
+        <ul className="manage-topics-list">
+          {topics.map((topic) => (
+            <li className="manage-topics-list-item" key={topic.id}>
+              <div className="manage-topics-item-header">
+                <h3 className="manage-topics-item-title">{topic.name}</h3>
+                <span className={`manage-topics-status-badge ${topic.status}`}>
+                  {topic.status}
+                </span>
+              </div>
+              
+              <div className="manage-topics-meta-data">
+                <span className="manage-topics-meta-item">
+                  ສະມາຊິກ/ກຸ່ມ: {topic.membersPerGroup}
+                </span>
+                <span className="manage-topics-meta-item">
+                  ສູງສຸດ: {topic.maxGroups}
+                </span>
+              </div>
+              
+              {topic.description && (
+                <p className="manage-topics-description">
+                  {topic.description}
+                </p>
+              )}
+              
+              <button 
+                className="manage-topics-delete-btn"
+                onClick={() => handleDelete(topic.id)}
+              >
+                ລົບ
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 
-export default AddTopic;
+export default ManageTopics;

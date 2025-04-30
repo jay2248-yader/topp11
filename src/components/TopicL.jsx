@@ -1,49 +1,73 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import "./TopicL.css";
+
+import { useNavigate } from "react-router-dom";
 
 function TopicL() {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [clickCount, setClickCount] = useState(0);
+  const navigate = useNavigate(); // For navigation
+
+
 
   useEffect(() => {
-    setLoading(true);
-    const unsubscribeTopics = onSnapshot(
-      collection(db, "topics"),
-      (topicsSnapshot) => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      try {
+        const topicsSnapshot = await getDocs(collection(db, "topics"));
         const topicsData = topicsSnapshot.docs.map((docItem) => ({
           id: docItem.id,
           ...docItem.data(),
-          groupCount: 0,
         }));
 
-        setTopics(topicsData);
-        const unsubscribers = topicsData.map((topic) => {
-          const groupsQuery = query(
-            collection(db, "groups"),
-            where("topicId", "==", doc(db, "topics", topic.id))
-          );
+        // Fetch all groups in one go
+        const groupsSnapshot = await getDocs(collection(db, "groups"));
+        const topicGroupMap = {};
 
-          return onSnapshot(groupsQuery, (groupsSnapshot) => {
-            setTopics((prev) =>
-              prev.map((t) =>
-                t.id === topic.id
-                  ? { ...t, groupCount: groupsSnapshot.size }
-                  : t
-              )
-            );
-            setLoading(false);
-          });
+        groupsSnapshot.docs.forEach((groupDoc) => {
+          const groupData = groupDoc.data();
+          const topicId = groupData.topicId?.id || groupData.topicId; // for DocumentReference or string
+          if (topicId) {
+            topicGroupMap[topicId] = (topicGroupMap[topicId] || 0) + 1;
+          }
         });
 
-        return () => unsubscribers.forEach((unsub) => unsub());
-      }
-    );
+        const mergedData = topicsData.map((topic) => ({
+          ...topic,
+          groupCount: topicGroupMap[topic.id] || 0,
+        }));
 
-    return () => unsubscribeTopics();
+        setTopics(mergedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
+
+  
+  const handleTitleClick = () => {
+    setClickCount((prevCount) => prevCount + 1);
+    
+    if (clickCount + 1 === 5) {
+      // Redirect to login page after 5 clicks
+      navigate("/login");
+    }
+  };
 
   if (loading)
     return (
@@ -55,7 +79,12 @@ function TopicL() {
 
   return (
     <div className="page-container">
-      <h1 className="page-title">ຫົວຂໍ້ທັງຫມົດ</h1>
+     <h1
+        className="page-title"
+        onClick={handleTitleClick}
+      >
+        ຫົວຂໍ້ທັງຫມົດ
+      </h1>
       <p className="page-subtitle">ເລືອກຫົວຂໍ້ທີ່ສົນໃຈ ແລະ ຕ້ອງການ</p>
 
       <div className="topic-grid">
@@ -115,7 +144,6 @@ function TopicL() {
                 {isFull && !isInactive && (
                   <div className="status-badge full">ເຕັມ</div>
                 )}
-                {/* Allow viewing groups even if full */}
                 {!isInactive && (
                   <Link to={`/topics/${topic.id}`} className="view-button">
                     {isFull ? "ເບິ່ງລາຍລະອຽດ" : "ສະຫມັກ"}

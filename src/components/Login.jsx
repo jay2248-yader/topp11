@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
+import "./Login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -12,49 +13,51 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // เคลียร์ error เดิมก่อน
-
+    setError("");
     if (!email || !password) {
       setError("กรุณากรอกอีเมลและรหัสผ่าน");
       return;
     }
-
     try {
-      setLoading(true); // เริ่มโหลด
+      setLoading(true);
       await login(email, password);
-      navigate("/topp7/admin");
+      navigate("/topp8/admin");
     } catch (err) {
       setError("เข้าสู่ระบบไม่สำเร็จ: " + err.message);
     } finally {
-      setLoading(false); // ไม่ว่าผลจะสำเร็จ/ล้มเหลว ก็หยุดโหลด
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h2>เข้าสู่ระบบ</h2>
-
-      {error && <p style={{ color: "red" }}>{error}</p>} {/* ✅ ข้อความ error แดง */}
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="อีเมล"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={loading}
-        />
-        <input
-          type="password"
-          placeholder="รหัสผ่าน"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
-        </button>
-      </form>
+    <div className="login-container">
+      <div className="login-card">
+        <h2>เข้าสู่ระบบ</h2>
+        {error && <p className="error-msg">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="อีเมล"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
+          />
+          <input
+            type="password"
+            placeholder="รหัสผ่าน"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className={loading ? "loading" : ""}
+          >
+            {loading ? "" : "เข้าสู่ระบบ"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

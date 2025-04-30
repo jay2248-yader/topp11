@@ -29,6 +29,7 @@ function MemberInput() {
   const [groups, setGroups] = useState([]);
   const [expandedGroup, setExpandedGroup] = useState(null);
   const [formMode, setFormMode] = useState('new'); // 'new' or 'join'
+  const [isSubmitting, setIsSubmitting] = useState(false); 
   
   // Fetch topic info
   useEffect(() => {
@@ -77,8 +78,10 @@ function MemberInput() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    if (isSubmitting) return;
     setError('');
-    
+    setIsSubmitting(true);
+  
     try {
       if (!topicInfo) throw new Error('ຍັງບໍ່ໄດ້ໂຫຼດຂໍ້ມູລຫົວຂໍ້');
       if (topicInfo.status !== 'active') throw new Error('ຫົວຂໍ້ນີ້ປິດຮັຍສະໝັກແລ້ວ');
@@ -90,7 +93,7 @@ function MemberInput() {
       const existsSnap = await getDocs(
         query(
           collection(db, 'groups'),
-          where('topicId', '==', doc(db, 'topics', topicId))
+          where('topicId', '==', doc(db, 'topics', topicId)) // ແກ້ໄຂວົງປິດທີ່ນີ້
         )
       );
       
@@ -98,13 +101,18 @@ function MemberInput() {
       setModal({ visible: true, step: 'confirm', data: filled });
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+
   const handleJoinGroup = async e => {
     e.preventDefault();
+    if (isSubmitting) return; // ກວດສອບສະຖານະ
     setError('');
-    
+    setIsSubmitting(true);
+
     try {
       if (!singleMember.trim()) throw new Error('ກະລຸນາກອກຊື່ສະມາຊິກ');
       if (!currentGroup) throw new Error('ບໍ່ເຫັນຂໍ້ມູນກຸ່ມ');
@@ -128,19 +136,21 @@ function MemberInput() {
       });
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const confirmSubmit = async () => {
+    if (isSubmitting) return; // ກວດສອບສະຖານະ
     try {
+      setIsSubmitting(true);
       if (modal.mode === 'join') {
-        // Join existing group
         const groupRef = doc(db, 'groups', modal.groupId);
         await updateDoc(groupRef, {
           members: arrayUnion(modal.data[0])
         });
       } else {
-        // Create new group
         await addDoc(collection(db, 'groups'), {
           topicId: doc(db, 'topics', topicId),
           members: modal.data,
@@ -152,6 +162,8 @@ function MemberInput() {
     } catch (err) {
       setError(err.message);
       setModal({ visible: false, step: 'confirm' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -378,12 +390,16 @@ function MemberInput() {
                   )}
                 </div>
                 <div className="modal-buttons">
-                  <button onClick={confirmSubmit} className="confirm-button">
-                    ຍືນຍັນ
-                  </button>
-                  <button onClick={closeModal} className="cancel-button">
-                    ຍົກເລີກ
-                  </button>
+        <button 
+          onClick={confirmSubmit} 
+          className="confirm-button"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'ກຳລັງດຳເນີນການ...' : 'ຍືນຍັນ'}
+        </button>
+        <button onClick={closeModal} className="cancel-button">
+          ຍົກເລີກ
+        </button>
                 </div>
               </>
             ) : (

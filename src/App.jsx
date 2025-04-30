@@ -4,6 +4,8 @@ import MemberInput from "./components/MemberInput";
 import Login from "./components/Login";
 import AddTopic from "./components/AddTopic";
 import Admin from "./components/Admin";
+import ManageGroups from "./components/ManagaGroups";
+import ExportSheet from "./components/ExportSheet";
 
 function App() {
   return (
@@ -11,9 +13,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/topp8/admin" element={<Admin />} />
-        <Route path="/topp8" element={<TopicL />} /> {/* หน้า TopicList */}
-        <Route path="/topics/:topicId" element={<MemberInput />} /> {/* หน้า MemberInput ที่รับ topicId */}
+        <Route path="/topp8" element={<TopicL />} />
+        <Route path="/topics/:topicId" element={<MemberInput />} />
         <Route path="/add-topic" element={<AddTopic />} />
+        <Route path="/groups" element={<ManageGroups />} /> {/* ✅ เพิ่มบรรทัดนี้ */}
+        <Route path="/export-sheet" element={<ExportSheet />} />
       </Routes>
     </Router>
   );
