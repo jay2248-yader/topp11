@@ -46,7 +46,7 @@ function Admin() {
 
         {/* New button to navigate to TopicL */}
         <button
-          onClick={() => navigate("/topp8")}
+          onClick={() => navigate("/")}
           className="admin-button"
         >
           ກັບໄປຫົວຂໍ້
