@@ -92,7 +92,7 @@ function ExportSheet() {
   return (
     <div className="export-page__container">
       {/* 🔙 ปุ่มกลับหน้าหลัก */}
-      <Link to="/topp8/admin" className="manage-topics-back-btn">
+      <Link to="/admin" className="manage-topics-back-btn">
         &larr; ກັບໜ້າຫຼັກ
       </Link>
 

@@ -9,14 +9,14 @@ import ExportSheet from "./components/ExportSheet";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/topp8">
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/topp8/admin" element={<Admin />} />
-        <Route path="/topp8" element={<TopicL />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/" element={<TopicL />} />
         <Route path="/topics/:topicId" element={<MemberInput />} />
         <Route path="/add-topic" element={<AddTopic />} />
-        <Route path="/groups" element={<ManageGroups />} /> {/* ✅ เพิ่มบรรทัดนี้ */}
+        <Route path="/groups" element={<ManageGroups />} />
         <Route path="/export-sheet" element={<ExportSheet />} />
       </Routes>
     </Router>

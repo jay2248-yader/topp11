@@ -96,7 +96,7 @@ function ManageTopics() {
 
   return (
     <div className="manage-topics-container">
-      <Link to="/topp8/admin" className="manage-topics-back-btn">
+      <Link to="/admin" className="manage-topics-back-btn">
         &larr; ກັບໜ້າຫຼັກ
       </Link>
 

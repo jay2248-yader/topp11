@@ -113,7 +113,7 @@ function ManageGroups() {
   return (
     <div className="manage-groups-container">
       <div className="back-button-container">
-        <Link to="/topp8/admin" className="back-button">
+        <Link to="/admin" className="back-button">
           &larr; ກັບໜ້າຫຼັກ
         </Link>
       </div>

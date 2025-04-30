@@ -21,7 +21,7 @@ function Login() {
     try {
       setLoading(true);
       await login(email, password);
-      navigate("/topp8/admin");
+      navigate("/admin");
     } catch (err) {
       setError("ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ: " + err.message);
     } finally {
