@@ -122,4 +122,22 @@
       transform: translateX(0);
     }
   }
+
+  .manage-topics-back-btn {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    text-decoration: none;
+    color: #007bff;
+    background-color: #f2f2f2;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+  }
+  
+  .manage-topics-back-btn:hover {
+    background-color: #e0e0e0;
+    color: #0056b3;
+  }
+  
   

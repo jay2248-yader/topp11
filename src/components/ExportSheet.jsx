@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where, doc } from 'firebase/firestore';
+import { Link } from 'react-router-dom'; // 👉 เพิ่มการ import
 import { db } from '../firebase';
-import "./ExportSheet.css"
-
+import './ExportSheet.css';
 
 function ExportSheet() {
   const [topics, setTopics] = useState([]);
@@ -53,18 +53,16 @@ function ExportSheet() {
         return group.members?.length > max ? group.members.length : max;
       }, 0);
 
-      // หัวข้อ
       csvContent += `ຊື່ຫົວຂໍ້:,${topic.name}\n`;
       csvContent += `ຈຳນວນກຸ່ມສູງສຸດ:,${totalGroups}\n`;
       csvContent += `ຈຳນວນສະມາຊິກຕໍ່ກຸ່ມ:,${membersPerGroup}\n\n`;
 
-      // รายชื่อแต่ละกลุ่ม
       topic.groups.forEach((group, index) => {
         const members = group.members?.join(', ') || '';
         csvContent += `ກຸ່ມທີ ${index + 1}:,${members}\n`;
       });
 
-      csvContent += `\n\n`; // เว้นระหว่างหัวข้อ
+      csvContent += `\n\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -93,6 +91,11 @@ function ExportSheet() {
 
   return (
     <div className="export-page__container">
+      {/* 🔙 ปุ่มกลับหน้าหลัก */}
+      <Link to="/topp8/admin" className="manage-topics-back-btn">
+        &larr; ກັບໜ້າຫຼັກ
+      </Link>
+
       <h1 className="export-page__title">📤 ສົ່ງອອກຂໍ້ມູນກຸ່ມ</h1>
       <button className="export-page__download-button" onClick={exportToCSV}>⬇ ດາວໂຫລດ CSV</button>
 
