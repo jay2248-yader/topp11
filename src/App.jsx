@@ -9,7 +9,7 @@ import ExportSheet from "./components/ExportSheet";
 
 function App() {
   return (
-    <Router basename="/topp8">
+    <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
