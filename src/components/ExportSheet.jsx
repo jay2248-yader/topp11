@@ -48,13 +48,11 @@ function ExportSheet() {
     let csvContent = '';
 
     topics.forEach(topic => {
-      const totalGroups = topic.groups.length;
-      const membersPerGroup = topic.groups.reduce((max, group) => {
-        return group.members?.length > max ? group.members.length : max;
-      }, 0);
+     
+      const membersPerGroup = topic.membersPerGroup;
 
       csvContent += `ຊື່ຫົວຂໍ້:,${topic.name}\n`;
-      csvContent += `ຈຳນວນກຸ່ມສູງສຸດ:,${totalGroups}\n`;
+      csvContent += `ຈຳນວນກຸ່ມສູງສຸດທີ່ອະນຸມັດ:,${topic.maxGroups}\n`; 
       csvContent += `ຈຳນວນສະມາຊິກຕໍ່ກຸ່ມ:,${membersPerGroup}\n\n`;
 
       topic.groups.forEach((group, index) => {
@@ -104,10 +102,12 @@ function ExportSheet() {
         {topics.map(topic => (
           <div key={topic.id} className="export-page__topic">
             <h3 className="export-page__topic-name">{topic.name}</h3>
-            <p className="export-page__group-info">ຈຳນວນກຸ່ມສູງສຸດ: {topic.groups.length}</p>
-            <p className="export-page__group-info">
-              ຈຳນວນສະມາຊິກຕໍ່ກຸ່ມ: {Math.max(...topic.groups.map(g => g.members?.length || 0))}
-            </p>
+            <span className="topic-stat-item">
+      <strong>ສະໝັກແລ້ວ:</strong> {topic.groups.length}/{topic.maxGroups} ກຸ່ມ
+    </span>
+    <p className="export-page__group-info">
+  ຈຳນວນສະມາຊິກຕໍ່ກຸ່ມ: {topic.membersPerGroup}
+</p>
             <ul className="export-page__group-list">
               {topic.groups.map((group, idx) => (
                 <li key={group.id} className="export-page__group-item">
