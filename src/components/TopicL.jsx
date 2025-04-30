@@ -139,7 +139,7 @@ function TopicL() {
 
               <div className="topic-footer">
                 {isInactive && (
-                  <div className="status-badge closed">ปิดรับสมัคร</div>
+                  <div className="status-badge closed">ປິດຮັບສະໝັກ</div>
                 )}
                 {isFull && !isInactive && (
                   <div className="status-badge full">ເຕັມ</div>
@@ -157,7 +157,7 @@ function TopicL() {
 
       {topics.length === 0 && (
         <div className="empty-state">
-          <p>ไม่พบหัวข้อที่เปิดให้ลงทะเบียน</p>
+          <p>ບໍ່ພົບຫົວຂໍ້ໃຫ້ເປີດລົງທະບຽນ</p>
         </div>
       )}
     </div>

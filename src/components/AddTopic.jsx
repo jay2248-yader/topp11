@@ -158,7 +158,7 @@ function ManageTopics() {
       {loading ? (
         <p className="manage-topics-loading">กำลังโหลด...</p>
       ) : topics.length === 0 ? (
-        <p className="manage-topics-empty">ไม่มีหัวข้อ</p>
+        <p className="manage-topics-empty">ບໍ່ມີຫົວຂໍ້</p>
       ) : (
         <ul className="manage-topics-list">
           {topics.map((topic) => (

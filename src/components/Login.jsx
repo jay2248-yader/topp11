@@ -15,7 +15,7 @@ function Login() {
     e.preventDefault();
     setError("");
     if (!email || !password) {
-      setError("กรุณากรอกอีเมลและรหัสผ่าน");
+      setError("ກະລູນາກອກ email and password");
       return;
     }
     try {
@@ -23,7 +23,7 @@ function Login() {
       await login(email, password);
       navigate("/topp8/admin");
     } catch (err) {
-      setError("เข้าสู่ระบบไม่สำเร็จ: " + err.message);
+      setError("ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -32,19 +32,19 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>เข้าสู่ระบบ</h2>
+        <h2>ເຂົ້າສູ່ລະບົບ</h2>
         {error && <p className="error-msg">{error}</p>}
         <form onSubmit={handleSubmit}>
           <input
             type="email"
-            placeholder="อีเมล"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
           />
           <input
             type="password"
-            placeholder="รหัสผ่าน"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
@@ -54,7 +54,7 @@ function Login() {
             disabled={loading}
             className={loading ? "loading" : ""}
           >
-            {loading ? "" : "เข้าสู่ระบบ"}
+            {loading ? "" : "ເຂົ້າສູ່ລະບົບ"}
           </button>
         </form>
       </div>

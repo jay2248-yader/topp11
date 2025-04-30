@@ -34,7 +34,7 @@ function ExportSheet() {
 
       setTopics(topicsWithGroups);
     } catch (err) {
-      setError('เกิดข้อผิดพลาด: ' + err.message);
+      setError('ເກີດຂໍໍ້ຜິດພາດ: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -54,14 +54,14 @@ function ExportSheet() {
       }, 0);
 
       // หัวข้อ
-      csvContent += `ชื่อหัวข้อ:,${topic.name}\n`;
-      csvContent += `จำนวนกลุ่มสูงสุด:,${totalGroups}\n`;
-      csvContent += `จำนวนสมาชิกต่อกลุ่ม:,${membersPerGroup}\n\n`;
+      csvContent += `ຊື່ຫົວຂໍ້:,${topic.name}\n`;
+      csvContent += `ຈຳນວນກຸ່ມສູງສຸດ:,${totalGroups}\n`;
+      csvContent += `ຈຳນວນສະມາຊິກຕໍ່ກຸ່ມ:,${membersPerGroup}\n\n`;
 
       // รายชื่อแต่ละกลุ่ม
       topic.groups.forEach((group, index) => {
         const members = group.members?.join(', ') || '';
-        csvContent += `กลุ่มที่ ${index + 1}:,${members}\n`;
+        csvContent += `ກຸ່ມທີ ${index + 1}:,${members}\n`;
       });
 
       csvContent += `\n\n`; // เว้นระหว่างหัวข้อ
@@ -79,36 +79,36 @@ function ExportSheet() {
   };
 
   if (loading) {
-    return <p className="export-page__loading">⏳ กำลังโหลดข้อมูล...</p>;
+    return <p className="export-page__loading">⏳ ກຳລັງໂຫຼດຂໍ້ມູນ...</p>;
   }
 
   if (error) {
     return (
       <div className="export-page__error">
         <p>❌ {error}</p>
-        <button className="export-page__retry-button" onClick={fetchData}>ลองอีกครั้ง</button>
+        <button className="export-page__retry-button" onClick={fetchData}>ລອງອີກຄັ້ງ</button>
       </div>
     );
   }
 
   return (
     <div className="export-page__container">
-      <h1 className="export-page__title">📤 ส่งออกข้อมูลกลุ่ม</h1>
-      <button className="export-page__download-button" onClick={exportToCSV}>⬇ ดาวน์โหลด CSV</button>
+      <h1 className="export-page__title">📤 ສົ່ງອອກຂໍ້ມູນກຸ່ມ</h1>
+      <button className="export-page__download-button" onClick={exportToCSV}>⬇ ດາວໂຫລດ CSV</button>
 
       <div className="export-page__preview">
-        <h2 className="export-page__subtitle">🔍 พรีวิวข้อมูล</h2>
+        <h2 className="export-page__subtitle">🔍 ພີວິວຂໍ້ມູນ</h2>
         {topics.map(topic => (
           <div key={topic.id} className="export-page__topic">
             <h3 className="export-page__topic-name">{topic.name}</h3>
-            <p className="export-page__group-info">จำนวนกลุ่มสูงสุด: {topic.groups.length}</p>
+            <p className="export-page__group-info">ຈຳນວນກຸ່ມສູງສຸດ: {topic.groups.length}</p>
             <p className="export-page__group-info">
-              จำนวนสมาชิกต่อกลุ่ม: {Math.max(...topic.groups.map(g => g.members?.length || 0))}
+              ຈຳນວນສະມາຊິກຕໍ່ກຸ່ມ: {Math.max(...topic.groups.map(g => g.members?.length || 0))}
             </p>
             <ul className="export-page__group-list">
               {topic.groups.map((group, idx) => (
                 <li key={group.id} className="export-page__group-item">
-                  กลุ่มที่ {idx + 1}: {group.members?.join(', ') || 'ไม่มีสมาชิก'}
+                  ກຸ່ມທີ {idx + 1}: {group.members?.join(', ') || 'ບໍ່ມີສະມາຊິກ'}
                 </li>
               ))}
             </ul>
