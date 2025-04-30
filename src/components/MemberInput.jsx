@@ -316,7 +316,7 @@ function MemberInput() {
                           key={i}
                           type="text"
                           className="member-input"
-                          placeholder={`ຊື່ສະມາ ແລະ ນາມສະກຸນ ສະມາຊິກຄົນທີ ${i + 1}`}
+                          placeholder={`ຊື່ ແລະ ນາມສະກຸນ ສະມາຊິກຄົນທີ ${i + 1}`}
                           value={members[i]}
                           onChange={e => {
                             const newMembers = [...members]; 
